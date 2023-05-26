@@ -1,1 +1,40 @@
+- name: Configure Apache virtual hosts
+  hosts: debian_servers
+  become: true
+  tasks:
+    - name: Create Apache virtual host for www.hei.school
+      template:
+        src: templates/vhost.conf.j2
+        dest: /etc/apache2/sites-available/www.hei.school.conf
+      notify: Reload Apache
+
+    - name: Enable Apache virtual host for www.hei.school
+      command: a2ensite www.hei.school.conf
+      notify: Reload Apache
+
+    - name: Create Apache virtual host for front.hei.school
+      template:
+        src: templates/vhost.conf.j2
+        dest: /etc/apache2/sites-available/front.hei.school.conf
+      notify: Reload Apache
+
+    - name: Enable Apache virtual host for front.hei.school
+      command: a2ensite front.hei.school.conf
+      notify: Reload Apache
+
+    - name: Create Apache virtual host for back.hei.school
+      template:
+        src: templates/vhost.conf.j2
+        dest: /etc/apache2/sites-available/back.hei.school.conf
+      notify: Reload Apache
+
+    - name: Enable Apache virtual host for back.hei.school
+      command: a2ensite back.hei.school.conf
+      notify: Reload Apache
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
 
